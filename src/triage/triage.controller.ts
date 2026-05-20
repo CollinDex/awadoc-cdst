@@ -6,8 +6,7 @@ import { TriageResponse, TriageService } from './triage.service';
 /**
  * POST /v1/encounters/triage
  *
- * The only critical-path endpoint in the system. Accepts a structured
- * encounter, returns the engine's deterministic triage output plus an
+ * Accepts a structured encounter, returns the engine's deterministic triage output plus an
  * auditId the clinician can later use to record disposition.
  */
 @ApiTags('triage')
@@ -23,7 +22,7 @@ export class TriageController {
       'Accepts validated clinical inputs and returns a triage level (Emergency / Urgent / ' +
       'Semi-Urgent / Routine), ranked differentials, triggered red flags, recommended ' +
       'next-step actions, and any missing-information prompts. The decision path is fully ' +
-      'deterministic — no LLM in the critical loop. ' +
+      'deterministic with no LLM in the critical loop. ' +
       'If any red flag fires, the response is forced to Emergency (safety override).',
   })
   @ApiResponse({ status: 200, description: 'Triage evaluated successfully.' })

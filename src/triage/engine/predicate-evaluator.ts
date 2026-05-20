@@ -61,7 +61,6 @@ function evaluateLeaf(input: unknown, p: LeafPredicate): boolean {
 
 /**
  * Evaluate a (possibly composite) predicate against a structured input object.
- * Pure: no I/O, no side effects, no mutation.
  */
 export function evaluatePredicate(input: unknown, predicate: Predicate): boolean {
   if (isLeaf(predicate)) {

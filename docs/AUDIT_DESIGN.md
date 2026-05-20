@@ -1,6 +1,6 @@
 # Audit Trail Design — Medico-Legal Accountability and Iterative Improvement
 
-This document is the Task 4 writeup. It explains *why* the audit schema looks the way it does and how the design supports two non-overlapping needs: (1) medico-legal defence of a single past decision, and (2) systematic improvement of the ruleset over time.
+This document explains *why* the audit schema looks the way it does and how the design supports two non-overlapping needs: (1) medico-legal defence of a single past decision, and (2) systematic improvement of the ruleset over time.
 
 ---
 
@@ -14,7 +14,7 @@ Per the assessment requirement, each `encounters` document persists:
 | `sessionId`       | Logical session — multiple encounters in the same triage session share this. |
 | `clinicianId`, `patientId`, `externalEncounterId` | Optional identity fields. In production these are populated by the EMR; in this prototype they are accepted but not enforced. |
 | `receivedAt`      | ISO timestamp at which the API received the request. |
-| `rulesetId`, `rulesetVersion` | **The exact ruleset that was active at decision time.** This is the cornerstone of medico-legal defensibility — see §3. |
+| `rulesetId`, `rulesetVersion` | **The exact ruleset that was active at decision time.** This is the cornerstone of medico-legal defensibility |
 | `evaluationPath`  | `"safety-override"` or `"standard"`. Tells future readers whether the response was produced by the red-flag short-circuit or by differential ranking. |
 | `triageLevel`     | Denormalized for fast filtering (`Emergency`, `Urgent`, ...). |
 | `input`           | The full validated DTO — structured, never free text. |

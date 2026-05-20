@@ -39,9 +39,9 @@ export class DemographicsDto {
   @Max(60)
   ageMonths!: number;
 
-  @ApiProperty({ enum: ['male', 'female', 'other'] })
-  @IsEnum(['male', 'female', 'other'])
-  sex!: 'male' | 'female' | 'other';
+  @ApiProperty({ enum: ['male', 'female'] })
+  @IsEnum(['male', 'female'])
+  sex!: 'male' | 'female';
 
   @ApiPropertyOptional({ minimum: 0.5, maximum: 30, description: 'Weight in kg, if measured.' })
   @IsOptional()
@@ -98,6 +98,9 @@ export class HistoryDto {
   @ApiPropertyOptional() @IsOptional() @IsBoolean() recentTravelMalariaZone?: boolean;
   @ApiPropertyOptional() @IsOptional() @IsBoolean() knownSickleCell?: boolean;
   @ApiPropertyOptional() @IsOptional() @IsBoolean() knownHIVExposure?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsBoolean() malariaVaccinationStatus?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsBoolean() sleepInMosquitoNet?: boolean;
+  @ApiPropertyOptional() @IsOptional() @IsBoolean() livesNearStagnantWaterSources?: boolean;
 }
 
 export class SymptomsDto {

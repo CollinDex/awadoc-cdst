@@ -168,7 +168,6 @@ function extractFirstField(predicate: unknown): string | null {
 }
 
 /**
- * Main entry point. Pure, deterministic.
  *
  * @param input         Validated triage input (already type-checked by DTO).
  * @param ruleset       Frozen ruleset, from RulesetLoader.

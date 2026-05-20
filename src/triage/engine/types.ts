@@ -106,7 +106,7 @@ export interface TriageInput {
 
   demographics: {
     ageMonths: number;
-    sex: 'male' | 'female' | 'other';
+    sex: 'male' | 'female';
     weightKg?: number;
   };
   vitals: {
@@ -122,6 +122,9 @@ export interface TriageInput {
     recentTravelMalariaZone?: boolean;
     knownSickleCell?: boolean;
     knownHIVExposure?: boolean;
+    malariaVaccinationStatus?: boolean;
+    sleepInMosquitoNet?: boolean;
+    livesNearStagnantWaterSources?: boolean;
   };
   symptoms: Partial<Record<
     | 'cough' | 'fastBreathing' | 'chestIndrawing'
@@ -129,7 +132,7 @@ export interface TriageInput {
     | 'rash' | 'koplikSpots'
     | 'neckStiffness' | 'bulgingFontanelle'
     | 'earPain' | 'earDischarge'
-    | 'poorFeeding' | 'sunkenEyes' | 'skinPinchSlow',
+    | 'poorFeeding' | 'sunkenEyes' | 'skinPinchSlow'| 'headache',
     boolean
   >>;
   redFlagsObserved: Partial<Record<
