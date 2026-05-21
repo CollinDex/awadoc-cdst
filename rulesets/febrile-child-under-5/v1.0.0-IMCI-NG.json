@@ -21,50 +21,167 @@
   },
   "inputSchema": {
     "demographics": {
-      "ageMonths": { "type": "int", "min": 0, "max": 60, "required": true },
-      "sex": { "type": "enum", "values": ["male", "female", "other"], "required": true },
-      "weightKg": { "type": "float", "min": 0.5, "max": 30, "required": false }
+      "ageMonths": {
+        "type": "int",
+        "min": 0,
+        "max": 60,
+        "required": true
+      },
+      "sex": {
+        "type": "enum",
+        "values": [
+          "male",
+          "female"
+        ],
+        "required": true
+      },
+      "weightKg": {
+        "type": "float",
+        "min": 0.5,
+        "max": 30,
+        "required": false
+      }
     },
     "vitals": {
-      "temperatureC": { "type": "float", "min": 30, "max": 43, "required": true },
-      "heartRate": { "type": "int", "min": 0, "max": 300, "required": false },
-      "respiratoryRate": { "type": "int", "min": 0, "max": 120, "required": false },
-      "spo2": { "type": "int", "min": 50, "max": 100, "required": false },
-      "capillaryRefillSec": { "type": "int", "min": 0, "max": 10, "required": false }
+      "temperatureC": {
+        "type": "float",
+        "min": 30,
+        "max": 43,
+        "required": true
+      },
+      "heartRate": {
+        "type": "int",
+        "min": 0,
+        "max": 300,
+        "required": false
+      },
+      "respiratoryRate": {
+        "type": "int",
+        "min": 0,
+        "max": 120,
+        "required": false
+      },
+      "spo2": {
+        "type": "int",
+        "min": 50,
+        "max": 100,
+        "required": false
+      },
+      "capillaryRefillSec": {
+        "type": "int",
+        "min": 0,
+        "max": 10,
+        "required": false
+      }
     },
     "history": {
-      "feverDurationDays": { "type": "int", "min": 0, "max": 30, "required": true },
-      "vaccinationUpToDate": { "type": "bool", "required": false },
-      "recentTravelMalariaZone": { "type": "bool", "required": false },
-      "knownSickleCell": { "type": "bool", "required": false },
-      "knownHIVExposure": { "type": "bool", "required": false }
+      "feverDurationDays": {
+        "type": "int",
+        "min": 0,
+        "max": 30,
+        "required": true
+      },
+      "vaccinationUpToDate": {
+        "type": "bool",
+        "required": false
+      },
+      "recentTravelMalariaZone": {
+        "type": "bool",
+        "required": false
+      },
+      "knownSickleCell": {
+        "type": "bool",
+        "required": false
+      },
+      "knownHIVExposure": {
+        "type": "bool",
+        "required": false
+      },
+      "malariaVaccinationStatus": {
+        "type": "bool",
+        "required": false
+      },
+      "sleepInMosquitoNet": {
+        "type": "bool",
+        "required": false
+      },
+      "livesNearStagnantWaterSources": {
+        "type": "bool",
+        "required": false
+      }
     },
     "symptoms": {
-      "cough": { "type": "bool" },
-      "fastBreathing": { "type": "bool" },
-      "chestIndrawing": { "type": "bool" },
-      "vomiting": { "type": "bool" },
-      "diarrhea": { "type": "bool" },
-      "bloodyStool": { "type": "bool" },
-      "rash": { "type": "bool" },
-      "koplikSpots": { "type": "bool" },
-      "neckStiffness": { "type": "bool" },
-      "bulgingFontanelle": { "type": "bool" },
-      "earPain": { "type": "bool" },
-      "earDischarge": { "type": "bool" },
-      "poorFeeding": { "type": "bool" },
-      "sunkenEyes": { "type": "bool" },
-      "skinPinchSlow": { "type": "bool" }
+      "cough": {
+        "type": "bool"
+      },
+      "fastBreathing": {
+        "type": "bool"
+      },
+      "chestIndrawing": {
+        "type": "bool"
+      },
+      "vomiting": {
+        "type": "bool"
+      },
+      "diarrhea": {
+        "type": "bool"
+      },
+      "bloodyStool": {
+        "type": "bool"
+      },
+      "rash": {
+        "type": "bool"
+      },
+      "koplikSpots": {
+        "type": "bool"
+      },
+      "neckStiffness": {
+        "type": "bool"
+      },
+      "bulgingFontanelle": {
+        "type": "bool"
+      },
+      "earPain": {
+        "type": "bool"
+      },
+      "earDischarge": {
+        "type": "bool"
+      },
+      "poorFeeding": {
+        "type": "bool"
+      },
+      "sunkenEyes": {
+        "type": "bool"
+      },
+      "skinPinchSlow": {
+        "type": "bool"
+      }
     },
     "redFlagsObserved": {
-      "convulsions": { "type": "bool" },
-      "lethargyOrUnconscious": { "type": "bool" },
-      "unableToDrinkOrBreastfeed": { "type": "bool" },
-      "vomitingEverything": { "type": "bool" },
-      "severeRespiratoryDistress": { "type": "bool" },
-      "centralCyanosis": { "type": "bool" },
-      "severeDehydration": { "type": "bool" },
-      "stridorAtRest": { "type": "bool" }
+      "convulsions": {
+        "type": "bool"
+      },
+      "lethargyOrUnconscious": {
+        "type": "bool"
+      },
+      "unableToDrinkOrBreastfeed": {
+        "type": "bool"
+      },
+      "vomitingEverything": {
+        "type": "bool"
+      },
+      "severeRespiratoryDistress": {
+        "type": "bool"
+      },
+      "centralCyanosis": {
+        "type": "bool"
+      },
+      "severeDehydration": {
+        "type": "bool"
+      },
+      "stridorAtRest": {
+        "type": "bool"
+      }
     }
   },
   "redFlags": [
@@ -72,73 +189,169 @@
       "id": "RF_CONVULSIONS",
       "label": "Active or recent convulsions",
       "explanation": "Seizures in a febrile child suggest cerebral malaria, meningitis, or severe sepsis. Immediate stabilization required.",
-      "predicate": { "all": [{ "field": "redFlagsObserved.convulsions", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "redFlagsObserved.convulsions",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_LETHARGY_UNCONSCIOUS",
       "label": "Lethargy or unconscious child",
       "explanation": "An IMCI general danger sign — indicates severe disease until proven otherwise.",
-      "predicate": { "all": [{ "field": "redFlagsObserved.lethargyOrUnconscious", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "redFlagsObserved.lethargyOrUnconscious",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_UNABLE_DRINK",
       "label": "Unable to drink or breastfeed",
       "explanation": "Risk of rapid deterioration from dehydration and sepsis. IMCI general danger sign.",
-      "predicate": { "all": [{ "field": "redFlagsObserved.unableToDrinkOrBreastfeed", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "redFlagsObserved.unableToDrinkOrBreastfeed",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_VOMITING_EVERYTHING",
       "label": "Vomiting everything taken",
       "explanation": "Cannot maintain hydration or oral medications — IMCI general danger sign.",
-      "predicate": { "all": [{ "field": "redFlagsObserved.vomitingEverything", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "redFlagsObserved.vomitingEverything",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_RESP_DISTRESS",
       "label": "Severe respiratory distress",
       "explanation": "Severe pneumonia or sepsis-related respiratory failure — requires immediate oxygen and referral.",
-      "predicate": { "all": [{ "field": "redFlagsObserved.severeRespiratoryDistress", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "redFlagsObserved.severeRespiratoryDistress",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_CYANOSIS",
       "label": "Central cyanosis",
       "explanation": "Severe hypoxaemia — life-threatening, requires immediate oxygen and resuscitation.",
-      "predicate": { "all": [{ "field": "redFlagsObserved.centralCyanosis", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "redFlagsObserved.centralCyanosis",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_SEVERE_DEHYDRATION",
       "label": "Severe dehydration",
       "explanation": "IMCI Plan C — requires IV fluid resuscitation and admission.",
-      "predicate": { "all": [{ "field": "redFlagsObserved.severeDehydration", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "redFlagsObserved.severeDehydration",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_STRIDOR_AT_REST",
       "label": "Stridor at rest",
       "explanation": "Upper airway obstruction — risk of imminent airway compromise.",
-      "predicate": { "all": [{ "field": "redFlagsObserved.stridorAtRest", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "redFlagsObserved.stridorAtRest",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_NECK_STIFFNESS",
       "label": "Neck stiffness",
       "explanation": "Strong indicator of meningitis until proven otherwise. Empiric antibiotics + urgent LP indicated.",
-      "predicate": { "all": [{ "field": "symptoms.neckStiffness", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "symptoms.neckStiffness",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_BULGING_FONTANELLE",
       "label": "Bulging fontanelle (infant)",
       "explanation": "Suggests raised intracranial pressure / meningitis in an infant.",
-      "predicate": { "all": [{ "field": "symptoms.bulgingFontanelle", "op": "eq", "value": true }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "symptoms.bulgingFontanelle",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      }
     },
     {
       "id": "RF_SPO2_BELOW_90",
       "label": "SpO2 < 90%",
       "explanation": "Severe hypoxaemia — life-threatening regardless of cause. Oxygen and referral.",
-      "predicate": { "all": [{ "field": "vitals.spo2", "op": "lt", "value": 90 }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "vitals.spo2",
+            "op": "lt",
+            "value": 90
+          }
+        ]
+      }
     },
     {
       "id": "RF_HYPERPYREXIA",
       "label": "Hyperpyrexia (≥ 41.0°C)",
       "explanation": "Risk of febrile-related neurological injury. Aggressive cooling and urgent workup.",
-      "predicate": { "all": [{ "field": "vitals.temperatureC", "op": "gte", "value": 41.0 }] }
+      "predicate": {
+        "all": [
+          {
+            "field": "vitals.temperatureC",
+            "op": "gte",
+            "value": 41.0
+          }
+        ]
+      }
     },
     {
       "id": "RF_HYPOTHERMIA_INFANT",
@@ -146,20 +359,28 @@
       "explanation": "Hypothermia in a young infant is a sepsis danger sign — empiric IV antibiotics indicated.",
       "predicate": {
         "all": [
-          { "field": "vitals.temperatureC", "op": "lt", "value": 35.5 },
-          { "field": "demographics.ageMonths", "op": "lt", "value": 3 }
+          {
+            "field": "vitals.temperatureC",
+            "op": "lt",
+            "value": 35.5
+          },
+          {
+            "field": "demographics.ageMonths",
+            "op": "lt",
+            "value": 3
+          }
         ]
       }
     }
   ],
   "redFlagOverrideActions": [
-    "Protect the airway; place in recovery position if unconscious or convulsing.",
-    "Give rectal diazepam 0.5 mg/kg (or IV diazepam 0.2 mg/kg) if actively convulsing — per IMCI dosing.",
-    "Check blood glucose; treat hypoglycaemia (10% dextrose 5 mL/kg IV) if present.",
-    "Establish IV access; start IV fluids if shock or severe dehydration suspected.",
-    "Give oxygen if SpO2 < 90% or respiratory distress.",
-    "Start empirical IV ceftriaxone if meningitis or sepsis suspected — do not delay for investigations.",
-    "Refer immediately to the paediatric emergency unit for inpatient management."
+    "[A — Airway] Protect the airway; place in recovery position if unconscious or convulsing.",
+    "[B — Breathing] Give oxygen if SpO2 < 90% or respiratory distress.",
+    "[C — Circulation] Establish IV access; start IV fluids if shock or severe dehydration suspected.",
+    "[C — Circulation] Start empirical IV ceftriaxone if meningitis or sepsis suspected — do not delay for investigations.",
+    "[D — Disability] Give rectal diazepam 0.5 mg/kg (or IV diazepam 0.2 mg/kg) if actively convulsing.",
+    "[D — Disability] Check blood glucose; treat hypoglycaemia (10% dextrose 5 mL/kg IV) if present.",
+    "[E — Exposure] Expose patient and check for other issues then refer immediately to the paediatric emergency unit for inpatient management."
   ],
   "differentials": [
     {
@@ -168,9 +389,53 @@
       "baseWeight": 0.40,
       "baseRationale": "Endemic in Nigeria — every fever in a child under 5 is malaria until proven otherwise. Holoendemic transmission means baseline probability is high in any presentation.",
       "modifiers": [
-        { "id": "MAL_TRAVEL", "predicate": { "all": [{ "field": "history.recentTravelMalariaZone", "op": "eq", "value": true }] }, "delta": 0.15, "rationale": "Recent travel to a malaria-endemic zone." },
-        { "id": "MAL_HIGH_TEMP", "predicate": { "all": [{ "field": "vitals.temperatureC", "op": "gte", "value": 39.0 }] }, "delta": 0.05, "rationale": "Temperature ≥ 39°C — high-grade fever consistent with malaria." },
-        { "id": "MAL_RESP_CONFLICT", "predicate": { "all": [{ "field": "symptoms.cough", "op": "eq", "value": true }, { "field": "symptoms.fastBreathing", "op": "eq", "value": true }] }, "delta": -0.05, "rationale": "Cough plus fast breathing redirects toward pneumonia." }
+        {
+          "id": "MAL_TRAVEL",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.recentTravelMalariaZone",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.15,
+          "rationale": "Recent travel to a malaria-endemic zone."
+        },
+        {
+          "id": "MAL_HIGH_TEMP",
+          "predicate": {
+            "all": [
+              {
+                "field": "vitals.temperatureC",
+                "op": "gte",
+                "value": 39.0
+              }
+            ]
+          },
+          "delta": 0.05,
+          "rationale": "Temperature ≥ 39°C — high-grade fever consistent with malaria."
+        },
+        {
+          "id": "MAL_RESP_CONFLICT",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.cough",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "field": "symptoms.fastBreathing",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": -0.05,
+          "rationale": "Cough plus fast breathing redirects toward pneumonia."
+        }
       ],
       "recommendedActions": [
         "Order malaria rapid diagnostic test (RDT) immediately; thick film microscopy if available.",
@@ -185,12 +450,51 @@
       "baseWeight": 0.18,
       "baseRationale": "Pneumonia is a leading cause of under-5 mortality in Nigeria — must be actively excluded in every febrile child with respiratory symptoms.",
       "modifiers": [
-        { "id": "PN_FAST_BREATH", "predicate": { "all": [{ "field": "symptoms.fastBreathing", "op": "eq", "value": true }] }, "delta": 0.15, "rationale": "Fast breathing for age is the cardinal IMCI sign of pneumonia." },
-        { "id": "PN_INDRAWING", "predicate": { "all": [{ "field": "symptoms.chestIndrawing", "op": "eq", "value": true }] }, "delta": 0.10, "rationale": "Chest indrawing indicates severe pneumonia per IMCI classification." },
-        { "id": "PN_LOW_SPO2", "predicate": { "all": [{ "field": "vitals.spo2", "op": "lt", "value": 94 }] }, "delta": 0.10, "rationale": "SpO2 < 94% raises probability of pneumonia with lower respiratory involvement." }
+        {
+          "id": "PN_FAST_BREATH",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.fastBreathing",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.15,
+          "rationale": "Fast breathing for age is the cardinal IMCI sign of pneumonia."
+        },
+        {
+          "id": "PN_INDRAWING",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.chestIndrawing",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.10,
+          "rationale": "Chest indrawing indicates severe pneumonia per IMCI classification."
+        },
+        {
+          "id": "PN_LOW_SPO2",
+          "predicate": {
+            "all": [
+              {
+                "field": "vitals.spo2",
+                "op": "lt",
+                "value": 94
+              }
+            ]
+          },
+          "delta": 0.10,
+          "rationale": "SpO2 < 94% raises probability of pneumonia with lower respiratory involvement."
+        }
       ],
       "recommendedActions": [
-        "Count respiratory rate over a full 60 seconds (do not estimate).",
+        "Count respiratory rate over a full 60 seconds (do not estimate) as children have an irregular breathing pattern.",
         "If fast breathing for age per IMCI: oral amoxicillin at IMCI dosing.",
         "Any chest indrawing or SpO2 < 90%: classify as severe pneumonia → refer + first-dose IM ampicillin/gentamicin + oxygen if available.",
         "Reassess after 48 hours."
@@ -202,9 +506,53 @@
       "baseWeight": 0.10,
       "baseRationale": "Under-5 sepsis remains a leading cause of mortality. Young infants are particularly high-risk and can present without focal signs.",
       "modifiers": [
-        { "id": "SEP_YOUNG_INFANT", "predicate": { "all": [{ "field": "demographics.ageMonths", "op": "lt", "value": 3 }] }, "delta": 0.20, "rationale": "Infants under 3 months — high sepsis risk, atypical presentation common." },
-        { "id": "SEP_TEMP_EXTREMES", "predicate": { "any": [{ "field": "vitals.temperatureC", "op": "lt", "value": 35.5 }, { "field": "vitals.temperatureC", "op": "gte", "value": 39.5 }] }, "delta": 0.08, "rationale": "Temperature extremes (hypothermia or high fever) suggest systemic infection." },
-        { "id": "SEP_POOR_FEEDING", "predicate": { "all": [{ "field": "symptoms.poorFeeding", "op": "eq", "value": true }] }, "delta": 0.05, "rationale": "Poor feeding is a non-specific but important sepsis indicator in young children." }
+        {
+          "id": "SEP_YOUNG_INFANT",
+          "predicate": {
+            "all": [
+              {
+                "field": "demographics.ageMonths",
+                "op": "lt",
+                "value": 3
+              }
+            ]
+          },
+          "delta": 0.20,
+          "rationale": "Infants under 3 months — high sepsis risk, atypical presentation common."
+        },
+        {
+          "id": "SEP_TEMP_EXTREMES",
+          "predicate": {
+            "any": [
+              {
+                "field": "vitals.temperatureC",
+                "op": "lt",
+                "value": 35.5
+              },
+              {
+                "field": "vitals.temperatureC",
+                "op": "gte",
+                "value": 39.5
+              }
+            ]
+          },
+          "delta": 0.08,
+          "rationale": "Temperature extremes (hypothermia or high fever) suggest systemic infection."
+        },
+        {
+          "id": "SEP_POOR_FEEDING",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.poorFeeding",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.05,
+          "rationale": "Poor feeding is a non-specific but important sepsis indicator in young children."
+        }
       ],
       "recommendedActions": [
         "Obtain IV access; draw blood culture before antibiotics if patient is stable enough.",
@@ -218,8 +566,34 @@
       "baseWeight": 0.05,
       "baseRationale": "Nigeria sits within the African meningitis belt — bacterial meningitis remains a high-mortality differential in febrile children.",
       "modifiers": [
-        { "id": "MEN_NECK_STIFF", "predicate": { "all": [{ "field": "symptoms.neckStiffness", "op": "eq", "value": true }] }, "delta": 0.30, "rationale": "Neck stiffness is a hallmark of meningitis." },
-        { "id": "MEN_FONTANELLE", "predicate": { "all": [{ "field": "symptoms.bulgingFontanelle", "op": "eq", "value": true }] }, "delta": 0.20, "rationale": "Bulging fontanelle in an infant suggests raised ICP / meningitis." }
+        {
+          "id": "MEN_NECK_STIFF",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.neckStiffness",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.30,
+          "rationale": "Neck stiffness is a hallmark of meningitis."
+        },
+        {
+          "id": "MEN_FONTANELLE",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.bulgingFontanelle",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.20,
+          "rationale": "Bulging fontanelle in an infant suggests raised ICP / meningitis."
+        }
       ],
       "recommendedActions": [
         "Urgent lumbar puncture if no contraindication (no signs of raised ICP, no shock, no focal neurology).",
@@ -233,9 +607,53 @@
       "baseWeight": 0.07,
       "baseRationale": "Measles remains a notifiable, vaccine-preventable cause of febrile illness in Nigeria with recurrent outbreaks.",
       "modifiers": [
-        { "id": "MEA_RASH_COUGH", "predicate": { "all": [{ "field": "symptoms.rash", "op": "eq", "value": true }, { "field": "symptoms.cough", "op": "eq", "value": true }] }, "delta": 0.20, "rationale": "Maculopapular rash with cough — classic measles prodrome." },
-        { "id": "MEA_KOPLIK", "predicate": { "all": [{ "field": "symptoms.koplikSpots", "op": "eq", "value": true }] }, "delta": 0.25, "rationale": "Koplik spots are pathognomonic for measles." },
-        { "id": "MEA_UNVACC", "predicate": { "all": [{ "field": "history.vaccinationUpToDate", "op": "eq", "value": false }] }, "delta": 0.10, "rationale": "Incomplete vaccination raises measles probability substantially." }
+        {
+          "id": "MEA_RASH_COUGH",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.rash",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "field": "symptoms.cough",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.20,
+          "rationale": "Maculopapular rash with cough — classic measles prodrome."
+        },
+        {
+          "id": "MEA_KOPLIK",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.koplikSpots",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.25,
+          "rationale": "Koplik spots are pathognomonic for measles."
+        },
+        {
+          "id": "MEA_UNVACC",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.vaccinationUpToDate",
+                "op": "eq",
+                "value": false
+              }
+            ]
+          },
+          "delta": 0.10,
+          "rationale": "Incomplete vaccination raises measles probability substantially."
+        }
       ],
       "recommendedActions": [
         "Isolate the child from other patients immediately.",
@@ -250,9 +668,53 @@
       "baseWeight": 0.10,
       "baseRationale": "Diarrhoeal disease is a major under-5 morbidity driver in Nigeria, especially in rainy-season clusters.",
       "modifiers": [
-        { "id": "GAS_DIARRHEA", "predicate": { "all": [{ "field": "symptoms.diarrhea", "op": "eq", "value": true }] }, "delta": 0.15, "rationale": "Diarrhoea present — central feature of gastroenteritis." },
-        { "id": "GAS_VOMIT", "predicate": { "all": [{ "field": "symptoms.vomiting", "op": "eq", "value": true }] }, "delta": 0.05, "rationale": "Vomiting commonly accompanies viral and bacterial gastroenteritis." },
-        { "id": "GAS_DEHYDRATION", "predicate": { "any": [{ "field": "symptoms.sunkenEyes", "op": "eq", "value": true }, { "field": "symptoms.skinPinchSlow", "op": "eq", "value": true }] }, "delta": 0.10, "rationale": "Dehydration signs strongly support gastroenteritis." }
+        {
+          "id": "GAS_DIARRHEA",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.diarrhea",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.15,
+          "rationale": "Diarrhoea present — central feature of gastroenteritis."
+        },
+        {
+          "id": "GAS_VOMIT",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.vomiting",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.05,
+          "rationale": "Vomiting commonly accompanies viral and bacterial gastroenteritis."
+        },
+        {
+          "id": "GAS_DEHYDRATION",
+          "predicate": {
+            "any": [
+              {
+                "field": "symptoms.sunkenEyes",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "field": "symptoms.skinPinchSlow",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.10,
+          "rationale": "Dehydration signs strongly support gastroenteritis."
+        }
       ],
       "recommendedActions": [
         "Assess dehydration severity → IMCI Plan A (no), B (some), or C (severe).",
@@ -267,7 +729,20 @@
       "baseWeight": 0.05,
       "baseRationale": "Typhoid (Salmonella Typhi) is endemic in Nigeria and a key differential for prolonged fever in children with poor sanitation exposure.",
       "modifiers": [
-        { "id": "TYP_PROLONGED", "predicate": { "all": [{ "field": "history.feverDurationDays", "op": "gte", "value": 7 }] }, "delta": 0.10, "rationale": "Fever ≥ 7 days raises typhoid probability." }
+        {
+          "id": "TYP_PROLONGED",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.feverDurationDays",
+                "op": "gte",
+                "value": 7
+              }
+            ]
+          },
+          "delta": 0.10,
+          "rationale": "Fever ≥ 7 days raises typhoid probability."
+        }
       ],
       "recommendedActions": [
         "Blood culture — gold standard; collect before antibiotics if the patient is stable.",
@@ -281,7 +756,25 @@
       "baseWeight": 0.03,
       "baseRationale": "Common cause of fever in young children, particularly post-URTI; often missed without otoscopy.",
       "modifiers": [
-        { "id": "OM_EAR_SIGNS", "predicate": { "any": [{ "field": "symptoms.earPain", "op": "eq", "value": true }, { "field": "symptoms.earDischarge", "op": "eq", "value": true }] }, "delta": 0.20, "rationale": "Ear pain or discharge — typical AOM presentation." }
+        {
+          "id": "OM_EAR_SIGNS",
+          "predicate": {
+            "any": [
+              {
+                "field": "symptoms.earPain",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "field": "symptoms.earDischarge",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.20,
+          "rationale": "Ear pain or discharge — typical AOM presentation."
+        }
       ],
       "recommendedActions": [
         "Perform otoscopy to confirm.",
@@ -303,24 +796,55 @@
     }
   ],
   "triageRules": {
-    "urgentTopDifferentialIds": ["DX_MALARIA", "DX_SEPSIS", "DX_PNEUMONIA", "DX_MENINGITIS"],
+    "urgentTopDifferentialIds": [
+      "DX_MALARIA",
+      "DX_SEPSIS",
+      "DX_PNEUMONIA",
+      "DX_MENINGITIS"
+    ],
     "urgentMinProbability": 0.35,
     "semiUrgentMinProbability": 0.20
   },
   "missingInfoChecks": [
     {
       "id": "MI_SPO2",
-      "predicate": { "all": [{ "field": "vitals.spo2", "op": "isNull" }] },
+      "predicate": {
+        "all": [
+          {
+            "field": "vitals.spo2",
+            "op": "isNull"
+          }
+        ]
+      },
       "prompt": "SpO2 not recorded — please measure with a paediatric pulse oximeter before final triage."
     },
     {
       "id": "MI_RR_FOR_COUGH",
-      "predicate": { "all": [{ "field": "vitals.respiratoryRate", "op": "isNull" }, { "field": "symptoms.cough", "op": "eq", "value": true }] },
+      "predicate": {
+        "all": [
+          {
+            "field": "vitals.respiratoryRate",
+            "op": "isNull"
+          },
+          {
+            "field": "symptoms.cough",
+            "op": "eq",
+            "value": true
+          }
+        ]
+      },
       "prompt": "Respiratory rate not recorded but cough is present — count over a full 60 seconds to rule out pneumonia."
     },
     {
       "id": "MI_FEVER_DURATION",
-      "predicate": { "all": [{ "field": "history.feverDurationDays", "op": "isNull" }] },
+      "predicate": {
+        "all": [
+          {
+            "field": "history.feverDurationDays",
+            "op": "isNull"
+          }
+        ]
+      },
       "prompt": "Fever duration not recorded — important for differentiating typhoid and prolonged-fever differentials."
     }
   ]
