@@ -1,7 +1,6 @@
 /**
  * Safety-override tests — Task 3 deliverable.
  *
- * Requirements per the assessment PDF:
  *   - Minimum 3 unit tests validating the override behaviour.
  *   - At least one with contradictory inputs (red flag + low-acuity differential).
  *   - At least one validating non-escalation when no red flags are present.

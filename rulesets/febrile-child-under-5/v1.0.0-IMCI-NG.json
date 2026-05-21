@@ -377,7 +377,7 @@
     "[A — Airway] Protect the airway; place in recovery position if unconscious or convulsing.",
     "[B — Breathing] Give oxygen if SpO2 < 90% or respiratory distress.",
     "[C — Circulation] Establish IV access; start IV fluids if shock or severe dehydration suspected.",
-    "[C — Circulation] Start empirical IV ceftriaxone if meningitis or sepsis suspected — do not delay for investigations.",
+    "[C — Circulation] Start empirical IV antibiotics if meningitis or sepsis suspected: ceftriaxone 100 mg/kg/day for children ≥ 4 weeks; in neonates < 4 weeks use ampicillin (50 mg/kg 6-hourly) + gentamicin (5 mg/kg daily) for Group B Streptococcus and Listeria coverage.",
     "[D — Disability] Give rectal diazepam 0.5 mg/kg (or IV diazepam 0.2 mg/kg) if actively convulsing.",
     "[D — Disability] Check blood glucose; treat hypoglycaemia (10% dextrose 5 mL/kg IV) if present.",
     "[E — Exposure] Expose patient and check for other issues then refer immediately to the paediatric emergency unit for inpatient management."
@@ -435,6 +435,48 @@
           },
           "delta": -0.05,
           "rationale": "Cough plus fast breathing redirects toward pneumonia."
+        },
+        {
+          "id": "MAL_NET_PROTECTION",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.sleepInMosquitoNet",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": -0.05,
+          "rationale": "Regular insecticide-treated net use provides partial protection — modestly lowers malaria probability."
+        },
+        {
+          "id": "MAL_STAGNANT_WATER",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.livesNearStagnantWaterSources",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.08,
+          "rationale": "Living near stagnant water (Anopheles breeding sites) increases malaria exposure in Nigerian settings."
+        },
+        {
+          "id": "MAL_VACCINATED",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.malariaVaccinationStatus",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": -0.05,
+          "rationale": "RTS,S/AS01E (R21/Matrix-M) vaccine provides partial protection — modestly lowers uncomplicated malaria probability."
         }
       ],
       "recommendedActions": [
@@ -552,12 +594,98 @@
           },
           "delta": 0.05,
           "rationale": "Poor feeding is a non-specific but important sepsis indicator in young children."
+        },
+        {
+          "id": "SEP_SICKLE_CELL",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.knownSickleCell",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.12,
+          "rationale": "Functional asplenia in sickle cell disease dramatically increases risk of overwhelming pneumococcal and Haemophilus influenzae sepsis."
+        },
+        {
+          "id": "SEP_HIV_EXPOSED",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.knownHIVExposure",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.10,
+          "rationale": "HIV-exposed/infected children have impaired cellular immunity, increasing risk of severe bacterial infection and opportunistic pathogens."
         }
       ],
       "recommendedActions": [
         "Obtain IV access; draw blood culture before antibiotics if patient is stable enough.",
         "Start empirical IV ceftriaxone per weight-based dosing (or ampicillin + gentamicin in neonates).",
         "Admit; reassess every 30 minutes until stable."
+      ]
+    },
+    {
+      "id": "DX_SICKLE_CELL_CRISIS",
+      "label": "Sickle cell crisis (vaso-occlusive or acute chest syndrome)",
+      "baseWeight": 0.05,
+      "baseRationale": "Nigeria has one of the highest sickle cell disease burdens globally (~100,000 births/year with SCD). A febrile sickle cell child must be assessed for vaso-occlusive crisis, acute chest syndrome, and splenic sequestration before attributing fever to malaria alone.",
+      "modifiers": [
+        {
+          "id": "SCK_KNOWN_STATUS",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.knownSickleCell",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.30,
+          "rationale": "Known sickle cell disease — any febrile episode warrants active exclusion of sickle cell crisis."
+        },
+        {
+          "id": "SCK_CHEST_SIGNS",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.knownSickleCell",
+                "op": "eq",
+                "value": true
+              },
+              {
+                "any": [
+                  {
+                    "field": "symptoms.chestIndrawing",
+                    "op": "eq",
+                    "value": true
+                  },
+                  {
+                    "field": "symptoms.fastBreathing",
+                    "op": "eq",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "delta": 0.15,
+          "rationale": "Chest signs in a known sickle cell child raise suspicion for acute chest syndrome — a life-threatening SCD complication requiring urgent transfusion."
+        }
+      ],
+      "recommendedActions": [
+        "Establish IV access; give maintenance IV fluids (0.9% saline or Ringer's lactate) at 1.0–1.5× maintenance rate — avoid over-hydration.",
+        "Give analgesia per pain score: paracetamol ± ibuprofen for mild/moderate pain; IV morphine (0.1 mg/kg) for severe pain.",
+        "Give oxygen if SpO2 < 95% (lower threshold than in non-SCD children).",
+        "Send FBC, reticulocyte count, and blood film for malaria — co-infection is common and life-threatening.",
+        "If haemoglobin < 6 g/dL or acute chest syndrome suspected, arrange urgent blood transfusion.",
+        "Refer immediately to paediatric haematology or the paediatric emergency unit for inpatient management."
       ]
     },
     {
@@ -593,6 +721,20 @@
           },
           "delta": 0.20,
           "rationale": "Bulging fontanelle in an infant suggests raised ICP / meningitis."
+        },
+        {
+          "id": "MEN_HIV_EXPOSED",
+          "predicate": {
+            "all": [
+              {
+                "field": "history.knownHIVExposure",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.08,
+          "rationale": "HIV-exposed/infected children face increased risk of cryptococcal and bacterial meningitis."
         }
       ],
       "recommendedActions": [
@@ -714,13 +856,28 @@
           },
           "delta": 0.10,
           "rationale": "Dehydration signs strongly support gastroenteritis."
+        },
+        {
+          "id": "GAS_BLOODY_STOOL",
+          "predicate": {
+            "all": [
+              {
+                "field": "symptoms.bloodyStool",
+                "op": "eq",
+                "value": true
+              }
+            ]
+          },
+          "delta": 0.20,
+          "rationale": "Bloody stool indicates bacterial enteritis — Shigella and Salmonella are common causes of dysentery in Nigerian children. Escalates management to antibiotic treatment."
         }
       ],
       "recommendedActions": [
         "Assess dehydration severity → IMCI Plan A (no), B (some), or C (severe).",
         "Begin ORS per IMCI plan; IV fluids if Plan C.",
         "Give zinc 10–20 mg daily × 14 days (age-dependent dose).",
-        "Counsel on safe water and continued feeding."
+        "Counsel on safe water and continued feeding.",
+        "If bloody diarrhoea: add cotrimoxazole (4/20 mg/kg twice daily × 5 days) or ciprofloxacin (10 mg/kg twice daily × 3 days) per local resistance patterns."
       ]
     },
     {
@@ -800,7 +957,8 @@
       "DX_MALARIA",
       "DX_SEPSIS",
       "DX_PNEUMONIA",
-      "DX_MENINGITIS"
+      "DX_MENINGITIS",
+      "DX_SICKLE_CELL_CRISIS"
     ],
     "urgentMinProbability": 0.35,
     "semiUrgentMinProbability": 0.20
