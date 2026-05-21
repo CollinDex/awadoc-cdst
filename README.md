@@ -1,6 +1,6 @@
 # AwaDoc CDST — Clinical Decision Support Tool
 
-A deterministic, auditable triage engine for **Febrile illness in a child under 5**, calibrated for Nigerian primary-care and outpatient settings. Built as the submission for the AwaDoc Clinical Backend Engineer technical assessment.
+A deterministic, auditable triage engine for **Febrile illness in a child under 5**, calibrated for Nigerian primary-care and outpatient settings.
 
 > ⚠️ **Non-diagnostic.** This service surfaces structured recommendations for clinician review. It does not autonomously diagnose, prescribe, or order treatment. The clinician is the decision-maker.
 
@@ -26,7 +26,7 @@ HTTP 200 response (includes auditId)
 [Audit worker → MongoDB immutable record]
 ```
 
-![alt text](image.png)
+![Architecture overview — HTTP request flow through the triage engine to the async audit pipeline](image.png)
 
 Why this shape:
 - **No LLM in the critical reasoning loop.** Hallucinations are fatal in clinical triage.
@@ -92,11 +92,11 @@ A single command:
 npm test
 ```
 
-Expect ≥ 5 passing tests covering:
-- The safety override (6 tests, including contradictory inputs and non-escalation)
-- Differential ranking and triage thresholds
-- A determinism test (1 000 evaluations of an identical input must produce a byte-identical output)
-- The predicate evaluator (incl. a structural assertion that the source contains no `eval()` or `new Function()`)
+Expect **30 passing tests** across 4 suites:
+- **HTTP integration** (`triage.http.spec.ts`) — golden path, safety override, and DTO validation rejection over a real NestJS HTTP server
+- **Safety override** (`safety-override.spec.ts`) — 6 tests including contradictory inputs and non-escalation
+- **Rules engine** (`rules-engine.spec.ts`) — differential ranking, triage thresholds, and a 1 000-iteration determinism assertion
+- **Predicate evaluator** (`predicate-evaluator.spec.ts`) — operator coverage and a structural assertion that the source contains no `eval()` or `new Function()`
 
 ---
 
@@ -144,7 +144,7 @@ awadoc-cdst/
 │   │   ├── triage.controller.ts        POST /v1/encounters/triage
 │   │   ├── triage.service.ts
 │   │   ├── triage.module.ts
-│   │   └── __tests__/                  ≥ 5 unit tests, runnable via `npm test`
+│   │   └── __tests__/                  30 tests — unit + HTTP integration, runnable via `npm test`
 │   └── audit/
 │       ├── audit.controller.ts         GET + PATCH disposition
 │       ├── audit.processor.ts          Bull worker → MongoDB

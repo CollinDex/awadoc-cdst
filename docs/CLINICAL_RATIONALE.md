@@ -2,7 +2,7 @@
 
 ## (a) Why this condition cluster
 
-**Febrile illness in a child under 5** is the highest-yield pathway for a Nigerian CDST pilot. Under-5 mortality in Nigeria is driven by treatable febrile illnesses — malaria, pneumonia, sepsis, diarrhoeal disease, and meningitis — and the WHO IMCI algorithm already encodes the assess-classify-treat structure used at the emergency. Translating an existing validated flowchart is safer than authoring novel clinical logic and the engine can be defended against a published reference rather than against my opinions.
+**Febrile illness in a child under 5** is the highest-yield pathway for a Nigerian CDST pilot. Under-5 mortality in Nigeria is driven by treatable febrile illnesses — malaria, pneumonia, sepsis, diarrhoeal disease, gastroenteritis and meningitis — and the WHO IMCI algorithm already encodes the assess-classify-treat structure used at the emergency. Translating an existing validated flowchart is safer than authoring novel clinical logic and the engine can be defended against a published reference rather than against my opinions.
 
 The pathway also forces a confrontation with African epidemiology. A Western-trained engine would rank viral URTI first; in Nigeria that is dangerous. The ruleset reflects this — malaria carries the highest base weight, viral URTI is pinned last, and meningitis carries a red-flag predicate independent of differential ranking because the African meningitis belt makes "rule it out clinically before discharge" non-negotiable.
 
