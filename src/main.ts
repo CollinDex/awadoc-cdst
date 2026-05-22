@@ -22,7 +22,7 @@ async function bootstrap(): Promise<void> {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // Swagger UI = the "Web App" deliverable.
+  // Swagger UI
   const swaggerConfig = new DocumentBuilder()
     .setTitle('AwaDoc CDST')
     .setDescription(

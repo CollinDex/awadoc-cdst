@@ -1,6 +1,6 @@
 # Bonus — Noura Conversational Layer over the CDST Engine
 
-This sketch answers the bonus prompt: *how would a conversational AI assistant (Noura) call this deterministic CDST engine?*
+This sketch answers the question: *how would a conversational AI assistant (Noura) call this deterministic CDST engine?*
 
 The single principle: **the LLM lives outside the reasoning loop.** It shapes inputs and renders outputs as natural language, but it never decides the triage level, never reorders the differential, never invents a recommended action. The engine remains deterministic; the LLM is an interface.
 

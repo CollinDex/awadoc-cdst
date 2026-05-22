@@ -1,11 +1,6 @@
 /**
- * Safety-override tests — Task 3 deliverable.
- *
- *   - Minimum 3 unit tests validating the override behaviour.
- *   - At least one with contradictory inputs (red flag + low-acuity differential).
- *   - At least one validating non-escalation when no red flags are present.
- *
- * This file ships 6 tests covering all required cases plus a few extras.
+ * Safety-override tests
+ *   - Unit tests validating the override behaviour and other edge cases.
  */
 
 import { evaluate } from '../engine/rules-engine';

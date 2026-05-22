@@ -40,14 +40,14 @@ See [`docs/AUDIT_DESIGN.md`](docs/AUDIT_DESIGN.md) for the medico-legal accounta
 
 ## Tech Stack and why
 
-Every dependency was chosen deliberately. Clinical software is a "would I defend this in a code review" exercise, not a "what's trendy" exercise.
+Every dependency was chosen deliberately. Here are the reasons why:
 
 | Layer | Choice | Why |
 |---|---|---|
 | Language | **TypeScript** | A clinical engine must catch shape errors at compile time, not in production. Discriminated unions on the `Predicate` type let the compiler exhaustively verify that every operator is handled — adding a new operator without a `switch` arm is a compile error, not a runtime surprise. |
-| Framework | **NestJS 10** | Opinionated structure (modules, controllers, providers) maps cleanly to the layered architecture this CDST needs: DTO → service → engine → audit. The DI container makes the rules engine trivially mockable for tests, and `@Module` boundaries make it obvious where the deterministic core ends and the I/O layer begins. |
+| Framework | **NestJS** | Opinionated structure (modules, controllers, providers) maps cleanly to the layered architecture this CDST needs: DTO → service → engine → audit. The DI(Dependency Injection) container makes the rules engine trivially mockable for tests, and `@Module` boundaries make it obvious where the deterministic core ends and the I/O layer begins. |
 | Validation | **class-validator** + **class-transformer** | DTO decorators (`@Min`, `@Max`, `@IsEnum`, `@ValidateNested`) reject clinically impossible inputs (e.g. `temperatureC: 500`, `ageMonths: -5`) with HTTP 400 *before* the engine sees them. The validator schema mirrors the ruleset's `inputSchema` 1:1, so the contract is enforced in two places that cannot drift apart. |
-| API docs | **@nestjs/swagger** | The "Web App" deliverable. Swagger UI is generated from the same DTOs that validate the request, so the published contract and the enforced contract can never diverge. Reviewers can drive the three documented scenarios from `/docs` with one click. |
+| API docs | **@nestjs/swagger** | Swagger UI is generated from the same DTOs that validate the request, so the published contract and the enforced contract can never diverge. Reviewers can drive the three documented scenarios from `/docs` with one click. |
 | Database | **MongoDB** (via **Mongoose**) | Audit records store the full validated `input` and full engine `output` as nested JSON — exactly the shape Mongo represents natively. `strict: 'throw'` on the schema rejects unknown fields, and indexes on `auditId`, `sessionId`, `clinicianId`, `evaluationPath`, `triageLevel` cover every audit-query path the governance committee will need. |
 | Queue | **Bull** on **Redis** | The clinician's response must not be blocked by MongoDB latency. Bull gives us exactly what audit needs: exponential-backoff retries, a unique-id idempotency primitive (`auditId` carries `unique: true`), and `removeOnFail: false` so failed jobs survive forever for medico-legal replay. Redis is a single in-memory dependency, sub-millisecond enqueue. |
 | Identifiers | **ULID** | Audit IDs are sortable: lexicographic order = chronological order. Range-querying `db.encounters.find({ auditId: { $gte: enc_X, $lte: enc_Y } })` works without a secondary timestamp index. |

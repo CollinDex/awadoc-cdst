@@ -1,5 +1,4 @@
 /**
- * Engine tests — Task 2 deliverable.
  * Covers ranking, determinism, missing-info checks, and triage thresholds.
  */
 

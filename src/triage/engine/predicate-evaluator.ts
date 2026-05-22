@@ -2,7 +2,6 @@
  * Pure predicate evaluator for the rules engine.
  *
  * Why a hand-rolled evaluator instead of a string-DSL approach?
- * - Clinical software must survive a security review. Runtime code synthesis is a non-starter.
  * - The expression surface area is small (12 operators, all numeric/boolean/null).
  *   A 60-line evaluator is more auditable than a dependency.
  * - Deterministic and stateless — same input twice always yields the same boolean.
