@@ -212,9 +212,6 @@ flowchart TD
 | Failure mode | Fail safe (escalate) | Fall back to Tier 3 if no ruleset | Guardrail can suppress/modify; clinician verifies |
 
 **Routing rule (simplified):** the orchestrator matches the validated presentation (chief complaint + demographics) against the ruleset registry's `appliesTo`. A match → Tier 2. No match → Tier 3. In **all** cases the output passes Tier 1 before display. Tier 1 runs *first* for red flags (an Emergency short-circuits to escalation regardless of tier) and *last* for the guardrail quality check.
-
-This is exactly the hybrid requested: **broad** because Tier 3 covers anything; **deterministic and defensible** because Tiers 1–2 own everything that can harm and every AI output is gated and traced.
-
 ---
 
 ## 6. Identity, RBAC & Scope-of-Practice
@@ -527,8 +524,6 @@ The `ENCOUNTER` record carries everything needed to reproduce and defend a decis
 
 ## 13. Observability & AI Governance
 
-The PRD requires that "every decision needs to be monitored." Observability is a first-class subsystem, not an afterthought.
-
 ```mermaid
 flowchart LR
     REQ["Encounter request"] --> SPAN["Root trace span"]
@@ -547,8 +542,6 @@ flowchart LR
     AUDIT --> BIAS["Bias & drift monitoring<br/>(override patterns, subgroup outcomes)"]
 ```
 
-Mapping to **PRD §8 (AI Governance)**:
-
 | Requirement | Mechanism |
 |-------------|-----------|
 | Human-in-the-loop | Accept/modify on the clinical output; advisory-only outputs |
@@ -558,8 +551,6 @@ Mapping to **PRD §8 (AI Governance)**:
 | Audit trails | Immutable `ENCOUNTER` + `AI_TRACE` |
 | Prompt logging | Gateway logs prompts/responses (PII-redacted), versioned |
 | Bias monitoring | Override-pattern + subgroup-outcome dashboards; eval harness on each version bump |
-
-The **eval harness** runs golden clinical cases on every ruleset, prompt, model, or corpus change; a regression (a previously-correct case now mis-triaged) blocks promotion. This is what makes versioned upgrades safe.
 
 ---
 
@@ -649,13 +640,4 @@ Stateful services are deployable in-region for data residency; AI-provider egres
 | Observability | OpenTelemetry + LLM-observability (e.g. Langfuse-style) | Traces, prompt logs, evals, dashboards |
 | Packaging / deploy | Docker + Kubernetes, cloud-agnostic | In-region stateful services; IaC |
 
-### Reused proven ideas
-
-Two ideas from prior CDST work are carried directly into the deterministic core and data model:
-
-1. A **safe deterministic rule engine** — weight-based differential ranking + red-flag safety override + a structured predicate evaluator with **no `eval()`** — becomes `packages/engine` powering Tiers 1–2.
-2. **Immutable, append-only encounter audit** with the **ruleset version pinned per record** becomes the `ENCOUNTER` model and the medico-legal backbone.
-
 ---
-
-*Next: see [IMPLEMENTATION.md](./IMPLEMENTATION.md) for the phased, 90-day-targeted build plan and PRD traceability.*
