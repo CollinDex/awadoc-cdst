@@ -111,15 +111,15 @@ gantt
 
 ### P2 — Frontend Workspace (wk 3–6, parallel)
 - **Objective:** The clinical workspace clinicians actually use.
-- **Tasks:** Next.js role-based shell rendering only permitted schema sections; encounter flow (intake → confirm extracted data → review brief → accept/modify → export); multi-modal input UI (text, yes/no buttons, audio capture, image upload); PWA app-shell caching; disposition UI.
+- **Tasks:** Next.js role-based shell rendering only permitted schema sections; encounter flow (intake → review brief → accept/modify → export); multi-modal input UI (text, yes/no buttons, audio capture, image upload); PWA app-shell caching; disposition UI.
 - **Acceptance:** doctor and CHEW see different sections for the same patient; full encounter completes against a stubbed backend; works on tablet.
 - **Risks:** UX complexity per role → start from the doctor flow, derive others by subtraction.
 
 ### P3 — AI Transport (wk 4–7)
 - **Objective:** Turn messy human input into validated schema, and outputs into voice/patient language.
-- **Tasks:** provider-agnostic **LLM gateway** (`packages/llm-gateway`) with chat/embed/stt/tts/vision + retry/fallback + prompt versioning + token/cost logging; **extraction** service (input → schema, constrained) with human-confirm step; extraction + reasoning **caches** (Redis); **voice** (STT/TTS via ElevenLabs/Whisper adapters); **patient-translation** service (clinical → patient-friendly, EN/Hausa/Yoruba/Igbo).
-- **Acceptance:** dictated history extracts to a valid DTO and is confirmed before reasoning; identical input hits cache; round-trip voice in one Phase-1 language; prompt logs visible (redacted).
-- **Risks:** extraction errors → always human-confirm; never auto-proceed on low-confidence fields.
+- **Tasks:** provider-agnostic **LLM gateway** (`packages/llm-gateway`) with chat/embed/stt/tts/vision + retry/fallback + prompt versioning + token/cost logging; **extraction** service (input → schema, constrained) with strict schema validation (no manual confirm step); extraction + reasoning **caches** (Redis); **voice** (STT/TTS via ElevenLabs/Whisper adapters); **patient-translation** service (clinical → patient-friendly, EN/Hausa/Yoruba/Igbo).
+- **Acceptance:** dictated history extracts to a valid DTO that passes schema validation and flows straight to the orchestrator; identical input hits cache; round-trip voice in one Phase-1 language; prompt logs visible (redacted).
+- **Risks:** extraction errors → strict schema validation rejects invalid/out-of-range values; low-confidence fields are surfaced on the output for clinician review and caught downstream by the guardrail.
 
 ### P4 — Reasoning + Guardrail (wk 6–9)
 - **Objective:** The 3-tier reasoning made real and safe.

@@ -38,7 +38,7 @@ The LLM is used aggressively for what it is good at — understanding messy huma
 
 1. **The deterministic core owns safety.** Red-flag escalation, scope-of-practice, and drug-safety limits are computed by deterministic rules with no `eval()` and no LLM in the path. They are reproducible and unit-tested.
 2. **AI is gated and observable.** No AI output reaches a clinician without passing the Clinical Guardrail Engine, and every AI call is traced (inputs, retrieved sources, model + prompt version, latency, cost, verdict).
-3. **Human-in-the-loop, always.** Extracted structured input is confirmed by the clinician before reasoning runs; final outputs are advisory and require accept/modify. NouraCDS never autonomously diagnoses, prescribes, or treats.
+3. **Human-in-the-loop on decisions, not on data entry.** Extracted input is validated against the strict clinical schema (invalid / out-of-range values rejected) and passed straight to the orchestrator — there is no manual "confirm the extracted data" step. Human oversight applies to the *clinical output*, which is advisory and requires the clinician to accept/modify. NouraCDS never autonomously diagnoses, prescribes, or treats.
 4. **Immutable audit.** Encounters are append-only. Inputs, outputs, and version pins are never mutated; only disposition is appended.
 5. **Versioned everything.** Rulesets, prompts, models, and the knowledge corpus are versioned artifacts. A record is reproducible because it pins the exact versions used.
 6. **Provider-agnostic AI.** All model access flows through an LLM gateway so Claude / OpenAI / local / ElevenLabs / Whisper are swappable by configuration.
@@ -175,9 +175,8 @@ Decisions are classified by **how much harm a wrong answer can do**, and routed 
 ```mermaid
 flowchart TD
     IN["Clinician input:<br/>text / buttons / audio / image"] --> EX["AI Transport: extract to schema<br/>(constrained / function-calling)"]
-    EX --> VAL["Schema validation (reject invalid ranges)"]
-    VAL --> CONF["Human confirms structured data"]
-    CONF --> CTX["Orchestrator assembles context<br/>(patient history + facility + epidemiology)"]
+    EX --> VAL["Schema validation<br/>(reject invalid / out-of-range values)"]
+    VAL --> CTX["Orchestrator assembles context<br/>(patient history + facility + epidemiology)"]
     CTX --> ROUTE{"Authored ruleset<br/>for this presentation?"}
 
     ROUTE -->|Yes| DET["Tier 2: Deterministic engine<br/>ranked differentials + triage + actions"]
@@ -212,7 +211,7 @@ flowchart TD
 | Reproducible? | Yes (byte-identical) | Yes (byte-identical) | Inputs/sources/versions traced; output labelled "AI-assisted" |
 | Failure mode | Fail safe (escalate) | Fall back to Tier 3 if no ruleset | Guardrail can suppress/modify; clinician verifies |
 
-**Routing rule (simplified):** the orchestrator matches the confirmed presentation (chief complaint + demographics) against the ruleset registry's `appliesTo`. A match → Tier 2. No match → Tier 3. In **all** cases the output passes Tier 1 before display. Tier 1 runs *first* for red flags (an Emergency short-circuits to escalation regardless of tier) and *last* for the guardrail quality check.
+**Routing rule (simplified):** the orchestrator matches the validated presentation (chief complaint + demographics) against the ruleset registry's `appliesTo`. A match → Tier 2. No match → Tier 3. In **all** cases the output passes Tier 1 before display. Tier 1 runs *first* for red flags (an Emergency short-circuits to escalation regardless of tier) and *last* for the guardrail quality check.
 
 This is exactly the hybrid requested: **broad** because Tier 3 covers anything; **deterministic and defensible** because Tiers 1–2 own everything that can harm and every AI output is gated and traced.
 
@@ -286,7 +285,7 @@ graph TB
     GW --> A5
 ```
 
-- **Extraction** turns free text / button answers / audio transcript / image findings into the strict clinical schema using constrained decoding / function-calling bound to the input contract. Its output is validated and **human-confirmed** before any reasoning.
+- **Extraction** turns free text / button answers / audio transcript / image findings into the strict clinical schema using constrained decoding / function-calling bound to the input contract. Its output is **validated against the schema** (invalid / out-of-range values rejected) and passed straight to the orchestrator — there is no manual confirmation step.
 - **Reasoning / RAG** (Tier 3 only) retrieves guideline passages and produces a schema-constrained proposal with citations + confidence.
 - **Voice** (ElevenLabs / Whisper) and **Patient translation** implement PRD Modules 7 & 8 — multilingual STT/TTS and conversion of clinical language to patient-friendly language. Phase 1 languages: English, Hausa, Yoruba, Igbo; Phase 2: Pidgin, French, Swahili.
 - **Image interpretation** (PRD Module 9) handles skin/wounds/rashes first, lab/radiology reports later; its findings feed extraction, never the final decision.
@@ -309,7 +308,7 @@ flowchart LR
     end
 
     subgraph Retrieve["Retrieval (request time)"]
-        Q["Confirmed presentation + question"] --> RET["Hybrid retrieval<br/>(semantic + filters)"]
+        Q["Validated presentation + question"] --> RET["Hybrid retrieval<br/>(semantic + filters)"]
         VEC --> RET
         RET --> CITE["Top-k passages w/ source IDs"]
         CITE --> LLM["Reasoning LLM<br/>(answer constrained to cited passages)"]
@@ -327,7 +326,7 @@ This is the defensible heart of the system — pure functions, no I/O, no `eval(
 
 ```mermaid
 flowchart TD
-    INPUT["Confirmed structured input + reasoning output"] --> SO["Safety Override<br/>evaluate red-flag predicates"]
+    INPUT["Validated structured input + reasoning output"] --> SO["Safety Override<br/>evaluate red-flag predicates"]
     SO -->|"any red flag fires"| EMERG["Force triage = Emergency<br/>path = safety-override"]
     SO -->|"none"| RANK["Rule engine<br/>rank differentials (weights -> normalized probs)"]
     RANK --> PICK["Pick triage level<br/>(top differential vs thresholds)"]
@@ -415,9 +414,7 @@ sequenceDiagram
     O->>Q: extraction cache?
     Q-->>O: miss
     O->>X: extract to schema
-    X-->>O: structured input (validated)
-    O-->>C: confirm extracted data
-    C-->>O: confirmed (+ corrections)
+    X-->>O: structured input (schema-validated)
     O->>O: assemble context + route tier
     O->>Q: reasoning cache?
     Q-->>O: miss
@@ -554,7 +551,7 @@ Mapping to **PRD §8 (AI Governance)**:
 
 | Requirement | Mechanism |
 |-------------|-----------|
-| Human-in-the-loop | Confirm-before-reason + accept/modify; advisory-only outputs |
+| Human-in-the-loop | Accept/modify on the clinical output; advisory-only outputs |
 | Explainable outputs | Per-differential rationale; triggered modifiers; cited passages |
 | Guideline citations | RAG citations + ruleset provenance pinned per record |
 | Confidence scoring | Differential probabilities (Tier 2) + model confidence (Tier 3) |
