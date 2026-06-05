@@ -2,9 +2,6 @@
 
 **AI-Powered Clinical Intelligence & Decision Support Platform**
 
-Owner: AwaDoc · Status: Design · Audience: Engineering & Technical Reviewers
-
-> Companion document: [IMPLEMENTATION.md](./IMPLEMENTATION.md) (phased build plan).
 > Source requirements: the NouraCDS PRD (v1.0).
 
 ---
@@ -53,9 +50,7 @@ The LLM is used aggressively for what it is good at — understanding messy huma
 
 ## 3. System Context Diagram
 
-*The whole platform as a single box — who uses it and which outside systems it talks to. No internal detail; this is the "zoomed all the way out" view.*
-
-> This and the next diagram follow the **C4 model** — a convention for drawing architecture at progressive zoom levels (Context → Container → Component → Code), like zooming in on a map. Level 1 (here) is the system as one box; Level 2 (next) opens that box. Note: in C4, "container" means any running app or datastore — **not** a Docker container.
+*The whole platform as a single box — who uses it and which outside systems it talks to.*
 
 ```mermaid
 graph TB
@@ -95,8 +90,6 @@ A patient who already uses AwaDoc's WhatsApp bot or app has history we can pull 
 ---
 
 ## 4. High-Level Component / Layer Architecture
-
-*Zooming into the single box from Section 3 — the major apps, services, and datastores inside NouraCDS and how they communicate. (C4 Level 2: "containers" here means runnable units like the web app, the API, MongoDB, Redis — not Docker containers.)*
 
 ```mermaid
 graph TB
