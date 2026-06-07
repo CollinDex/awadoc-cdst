@@ -767,20 +767,3 @@ Stateful services are deployable in-region for data residency; AI-provider egres
 | Packaging / deploy | Docker + Kubernetes, cloud-agnostic | In-region stateful services; IaC |
 
 ---
-
-## 18. Alignment Notes / Open Divergences with the AI-Layer Spec
-
-This architecture is aligned with the AI engineer's *AI Layer Architecture v1.0* on every clinical-reasoning concept above — trust grading, the ContextPayload → ClinicalBrief contract, per-role agents + handler dependency waves, pre/post deterministic safety, required-vs-optional tools, and the eval + performance targets. Our **locked platform decisions are unchanged**: NestJS/TypeScript, Prisma + MongoDB, a provider-agnostic LLM gateway, and a Next.js PWA.
-
-The items below are **open implementation divergences** between this document and the AI engineer's build. They are recorded here to be reconciled with the engineer — not resolved in this document:
-
-| Topic | This document | AI-layer spec | Note |
-|-------|---------------|----------------|------|
-| AI-layer runtime | AI services within the NestJS platform | Separate **FastAPI / Python** service | The AI layer may ship as its own Python service behind the same ContextPayload → ClinicalBrief contract; the boundary is identical either way. |
-| AI-layer datastores | MongoDB (platform) | **Supabase / Postgres** (drug, knowledge, AI audit) + Redis context store | A genuine difference: decide whether the AI layer uses its own Postgres or the platform's MongoDB. |
-| Vector store | Agnostic (Qdrant / pgvector / Atlas), chosen at build time | **Pinecone** | Not a conflict — Pinecone is a concrete choice for a slot this document left open. |
-| LLM observability | OpenTelemetry + LLM-observability | **Langfuse** | Not a conflict — Langfuse fits the open "LLM-observability" slot. |
-
-Of these, **runtime language** and **AI-layer datastore** are the two that need an explicit decision with the AI engineer; the vector store and observability tool simply fill slots this document intentionally left open.
-
----
