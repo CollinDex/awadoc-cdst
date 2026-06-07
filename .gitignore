@@ -8,3 +8,6 @@ coverage/
 .idea/
 .vscode/
 *.tsbuildinfo
+
+# Locally-generated PDF exports of docs (keep markdown as source of truth)
+*.pdf
