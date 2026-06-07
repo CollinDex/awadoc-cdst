@@ -212,6 +212,47 @@ flowchart TD
 | Failure mode | Fail safe (escalate) | Fall back to Tier 3 if no ruleset | Guardrail can suppress/modify; clinician verifies |
 
 **Routing rule (simplified):** the orchestrator matches the validated presentation (chief complaint + demographics) against the ruleset registry's `appliesTo`. A match → Tier 2. No match → Tier 3. In **all** cases the output passes Tier 1 before display. Tier 1 runs *first* for red flags (an Emergency short-circuits to escalation regardless of tier) and *last* for the guardrail quality check.
+
+### How this maps to the AI-layer spec
+
+The same model, expressed in the AI engineer's component language: a deterministic **Safety Classifier** runs *before* the LLM (our Tier-1 red-flag override), the LLM may call only **required deterministic tools** (rule engine, RAG, drug lookup — our Tier-2) plus optional augmentation tools, and a deterministic **Role Guardrail** runs *after* the LLM (our Tier-1 guardrail). In other words, "Safety Classifier" ≡ our **Safety Override** and "Role Guardrail" ≡ our **Clinical Guardrail Engine**.
+
+Internally the AI reasoning is organised as **per-role agents** (doctor / nurse / CHEW / pharmacist), each composed of **event handlers** (e.g. `differentials`, `investigations`, `treatment_plan`, `drug_safety`, `soap_note`). Handlers run in **dependency waves**, not a flat batch: independent handlers run first; dependent handlers wait only for the specific outputs they consume. If a dependency failed after its retry, the dependent handler proceeds with reduced context and is labelled **low-confidence** rather than blocking the whole encounter.
+
+```mermaid
+flowchart LR
+    subgraph W1["Wave 1 — independent"]
+        DIFF["differentials"]
+        DS["drug_safety"]
+    end
+    subgraph W2["Wave 2 — depend on differentials"]
+        INV["investigations"]
+        TP["treatment_plan"]
+    end
+    subgraph W3["Wave 3 — depends on all prior"]
+        SOAP["soap_note"]
+    end
+    DIFF --> INV
+    DIFF --> TP
+    DIFF --> SOAP
+    INV --> SOAP
+    TP --> SOAP
+    DS --> SOAP
+```
+
+### Context trust grading
+
+Not all context is equally trustworthy, so every field carried into reasoning is **graded**, and the grade constrains how it may be used:
+
+| Grade | Source | Usage rule |
+|-------|--------|------------|
+| **VERIFIED** | Clinician-entered data | Primary clinical evidence |
+| **REPORTED** | AwaDoc WhatsApp bot / patient intake | Supporting only; never the sole basis for a recommendation |
+| **HISTORICAL** | Past encounters / prior diagnoses | Background awareness only |
+| **INFERRED** | Calculated values (BMI, age group, risk flags) | Supplementary signal |
+
+This makes the AwaDoc/WhatsApp pull from Section 3 explicit: pulled patient data enters as **REPORTED** — it can enrich reasoning but can never, on its own, drive a clinical recommendation.
+
 ---
 
 ## 6. Identity, RBAC & Scope-of-Practice
@@ -289,6 +330,44 @@ graph TB
 
 None of these services decide clinical outcomes — they are transport and proposal only, gated downstream.
 
+### AI-layer I/O contract: ContextPayload → ClinicalBrief
+
+The orchestrator and the AI services communicate over a single versioned contract:
+
+- **ContextPayload (in)** — `metadata` (encounter / tenant / facility, role, requested outputs, versions), `patient` (internal reference + non-PHI demographics: age, sex, weight, pregnancy), `clinical_context` (role-specific VERIFIED data), and optional `graded_context` (REPORTED / HISTORICAL / INFERRED).
+- **ClinicalBrief (out)** — `status` (COMPLETE / PARTIAL / FAILED), `escalation_triggered` + `escalation_reason`, per-event `outputs` (each a gated output or a failure record), `failed_outputs`, an `ai_label` ("AI-assisted"), and the version pins (`prompt_versions`, `model_version`, `corpus_version`) plus `generated_at`.
+
+The version pins carried on the ClinicalBrief are what make the persisted encounter reproducible.
+
+### Handler pipeline
+
+Every handler follows the same sequence; missing required-tool context fails the handler **before** the LLM is ever called (fail-closed):
+
+```mermaid
+flowchart TD
+    P1["Fetch prompt<br/>prompt registry: role / event / version"] --> P2["Read prior outputs<br/>(encounter context store)"]
+    P2 --> P3["REQUIRED tool phase<br/>deterministic · fail-closed"]
+    P3 --> P4["LLM agentic loop<br/>synthesize · optional tools only"]
+    P4 --> P5["Post-LLM verification<br/>re-check interactions / contra / dosing"]
+    P5 --> P6["Schema + citation validation<br/>reject invalid + uncited -> 1 retry"]
+    P6 --> P7["Write to encounter store<br/>available to dependent handlers"]
+```
+
+- **Required vs optional tools.** Required tools (RAG, rule engine, drug lookup, interaction/contraindication checks) run *unconditionally and deterministically*; the LLM may call only optional augmentation tools. The LLM can never skip a required safety check.
+- **Prompt registry.** Prompts are versioned artifacts addressed as `prompts/<role>/<event>/v<x.y.z>`, and the version used is pinned per output in the ClinicalBrief.
+
+### Role-scoped tool access
+
+Tool access is itself role-scoped — defense in depth alongside edge RBAC (Section 6) and the guardrail's scope check:
+
+| Tool | Doctor | Nurse | CHEW | Pharmacist |
+|------|:------:|:-----:|:----:|:----------:|
+| General clinical RAG | full | full | — | — |
+| Maternal / neonatal RAG | full | full | — | — |
+| IMCI / iCCM index + rules | — | — | full | — |
+| Drug lookup + safety | full | read | — | full |
+| Local epidemiology | full | full | full | — |
+
 ---
 
 ## 8. RAG / Knowledge Pipeline
@@ -360,6 +439,28 @@ Components:
 - **Drug Safety Engine** (PRD Module 5) — interactions, contraindications, pregnancy safety, paediatric dosing, duplicate-therapy detection; consulted by the guardrail and callable directly by pharmacists.
 - **Ruleset registry** — versioned, immutable ruleset files (one per condition), loaded at boot and frozen. New clinical content ships as a new version; old versions are never edited or deleted.
 
+### Safety Classifier routing (pre-AI)
+
+The Safety Classifier (our Safety Override, run *before* the LLM) categorises danger signs — neurological, respiratory, obstetric, paediatric, sepsis/red-flag, surgical/abdominal — and routes by role + acuity:
+
+| Condition | Behaviour |
+|-----------|-----------|
+| CHEW + CRITICAL | **Stop.** Attach the emergency flag and return an immediate-referral brief — do not run AI synthesis. |
+| Doctor / Nurse + CRITICAL | Attach the emergency flag and continue with an emergency-escalation prompt. |
+| No emergency | Continue normally. |
+
+### Guardrail failure modes (post-AI)
+
+The Clinical Guardrail Engine (Role Guardrail, run *after* the LLM) resolves each issue deterministically:
+
+| Trigger | Action |
+|---------|--------|
+| Danger sign detected | Force escalation; override the LLM output. |
+| Low confidence | Label the item LOW; do not suppress. |
+| Scope violation | Withhold the action; surface an escalation prompt. |
+| Drug-safety flag | Suppress until resolved / acknowledged. |
+| Missing citation | Suppress the uncited claim. |
+
 ---
 
 ## 10. Caching
@@ -381,6 +482,7 @@ flowchart LR
 
 - **Extraction cache** keyed on the normalised raw input — identical dictation/text need not be re-processed.
 - **Reasoning cache** keyed on the **full version fingerprint**. Because deterministic-engine output is a pure function of `(input, ruleset)`, it is trivially cacheable. AI output is also cached but **any** version bump (model, prompt, corpus, ruleset) changes the key and invalidates stale entries — so a model upgrade can never silently serve outdated reasoning.
+- **Request idempotency.** The reasoning-cache key doubles as the AI-layer idempotency key — `hash(role + sanitized ContextPayload + prompt_version + corpus_version)`. Concurrent identical requests are de-duplicated **in-flight** (the second waits on the first) rather than running the model twice.
 
 ---
 
@@ -552,6 +654,30 @@ flowchart LR
 | Prompt logging | Gateway logs prompts/responses (PII-redacted), versioned |
 | Bias monitoring | Override-pattern + subgroup-outcome dashboards; eval harness on each version bump |
 
+### Evaluation targets
+
+The eval / regression harness gates every version bump against these thresholds; uncertain cases route to a clinician for human review:
+
+| Metric | Target |
+|--------|--------|
+| Safety-classifier sensitivity (danger-sign detection) | ≥ 99% |
+| Guardrail precision | ≥ 99% |
+| Clinical accuracy (top differential) | ≥ 95% |
+| RAG relevance | ≥ 90% |
+
+### Performance targets
+
+| Stage | Budget |
+|-------|--------|
+| Schema validation | < 20 ms |
+| Safety classifier | < 50 ms |
+| Required tool phase | < 500 ms |
+| LLM agentic loop | < 2500 ms (p95) |
+| Post-LLM verification | < 200 ms |
+| Guardrail | < 100 ms |
+| Total request (fresh) | < 3500 ms (p95) |
+| Total request (cached) | < 200 ms |
+
 ---
 
 ## 14. Integrations
@@ -639,5 +765,22 @@ Stateful services are deployable in-region for data residency; AI-provider egres
 | Auth | OIDC (Keycloak / managed IdP) | JWT at BFF; RBAC + scope-of-practice |
 | Observability | OpenTelemetry + LLM-observability (e.g. Langfuse-style) | Traces, prompt logs, evals, dashboards |
 | Packaging / deploy | Docker + Kubernetes, cloud-agnostic | In-region stateful services; IaC |
+
+---
+
+## 18. Alignment Notes / Open Divergences with the AI-Layer Spec
+
+This architecture is aligned with the AI engineer's *AI Layer Architecture v1.0* on every clinical-reasoning concept above — trust grading, the ContextPayload → ClinicalBrief contract, per-role agents + handler dependency waves, pre/post deterministic safety, required-vs-optional tools, and the eval + performance targets. Our **locked platform decisions are unchanged**: NestJS/TypeScript, Prisma + MongoDB, a provider-agnostic LLM gateway, and a Next.js PWA.
+
+The items below are **open implementation divergences** between this document and the AI engineer's build. They are recorded here to be reconciled with the engineer — not resolved in this document:
+
+| Topic | This document | AI-layer spec | Note |
+|-------|---------------|----------------|------|
+| AI-layer runtime | AI services within the NestJS platform | Separate **FastAPI / Python** service | The AI layer may ship as its own Python service behind the same ContextPayload → ClinicalBrief contract; the boundary is identical either way. |
+| AI-layer datastores | MongoDB (platform) | **Supabase / Postgres** (drug, knowledge, AI audit) + Redis context store | A genuine difference: decide whether the AI layer uses its own Postgres or the platform's MongoDB. |
+| Vector store | Agnostic (Qdrant / pgvector / Atlas), chosen at build time | **Pinecone** | Not a conflict — Pinecone is a concrete choice for a slot this document left open. |
+| LLM observability | OpenTelemetry + LLM-observability | **Langfuse** | Not a conflict — Langfuse fits the open "LLM-observability" slot. |
+
+Of these, **runtime language** and **AI-layer datastore** are the two that need an explicit decision with the AI engineer; the vector store and observability tool simply fill slots this document intentionally left open.
 
 ---
